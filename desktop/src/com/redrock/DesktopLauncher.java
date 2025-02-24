@@ -171,7 +171,7 @@ public class DesktopLauncher {
 		};
 
 //		new Lwjgl3Application(new Main(720, 1280, 2160, 3840, iPlat), config);
-//		new Lwjgl3Application(new Main(1280, 720, 3840, 2160, iPlat), config);
-		new Lwjgl3Application(new GameClient(), config);
+		new Lwjgl3Application(new Main(1280, 720, 3840, 2160, iPlat), config);
+//		new Lwjgl3Application(new GameClient(), config);
 	}
 }

@@ -49,29 +49,6 @@ public class StartScene extends ScreenAdapter {
     this.gParent.setSize(Main.getStage().getWidth(), Main.getStage().getHeight());
 
     Main.layers().init(SceneMgr.START_SCENE, Main.getStage().getWidth(), Main.getStage().getHeight());
-    this.createGameClient();
-  }
-
-  private void createGameClient(){
-    client = new Client();
-    client.start();
-    try {
-      client.connect(5000, "localhost", 54555, 54777); // Kết nối đến server
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-
-    client.getKryo().register(PlayerInput.class);
-    client.getKryo().register(GameState.class);
-
-    client.addListener(new Listener() {
-      public void received(Connection connection, Object object) {
-        if (object instanceof GameState) {
-          gameState = (GameState) object;
-          // Cập nhật giao diện game
-        }
-      }
-    });
   }
 
   @Override
@@ -81,13 +58,10 @@ public class StartScene extends ScreenAdapter {
     Main.layers().activeLayersBy(SceneMgr.START_SCENE);
     Main.getStage().addActor(gParent);
 
-    int configTestField = Main.iPlat().getConfigIntValue("configTestField", 5);
-    System.out.println("configTest: " + configTestField);
+    tilemapActor = new TilemapActor("map/map2.tmx", Main.getCamera());
+    this.gParent.addActor(tilemapActor);
 
-    tilemapActor = new TilemapActor("map/map.tmx", Main.getCamera());
-//    this.gParent.addActor(tilemapActor);
-
-    this.minimapActor = new MinimapActor(tilemapActor.getTiledMap(), 300, 300);
+    this.minimapActor = new MinimapActor(tilemapActor.getTiledMap(), 1280, 720);
     this.gParent.addActor(this.minimapActor);
 
 
@@ -98,6 +72,9 @@ public class StartScene extends ScreenAdapter {
     this.fish.setPosition(800, 200);
     this.gParent.addActor(this.fish);
 
+    System.out.println("cam x-y: " + Main.getCamera().position.x + "-" + Main.getCamera().position.y);
+    System.out.println("cam w-h: " + Main.getCamera().viewportWidth + "-" + Main.getCamera().viewportHeight);
+
   }
 
   @Override
@@ -105,7 +82,6 @@ public class StartScene extends ScreenAdapter {
     super.render(delta);
 
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//    this.joystick.update();
     float moveX = joystick.getKnobX();
     float moveY = joystick.getKnobY();
 
@@ -113,26 +89,11 @@ public class StartScene extends ScreenAdapter {
     this.fish.setX(this.fish.getX() + moveX * speed * delta);
     this.fish.setY(this.fish.getY() + moveY * speed * delta);
 
-
     float targetRotation = (float) Math.toRadians(joystick.getRotationAngle());
     this.updateRotation(targetRotation, delta);
 
     Main.getCamera().update();
-
-    // Render bản đồ
-
     Main.getMapRenderer().render();
-
-    PlayerInput input = new PlayerInput();
-    input.x = Gdx.input.getX();
-    input.y = Gdx.input.getY();
-    client.sendTCP(input);
-
-    // Hiển thị gameState lên màn hình
-    if (gameState != null) {
-//            renderGameState(gameState);
-      System.out.println("gameState ne: " + gameState.toString());
-    }
   }
 
   @Override
@@ -140,7 +101,6 @@ public class StartScene extends ScreenAdapter {
     super.dispose();
 
     tilemapActor.dispose();
-//    minimapActor.dispose();
   }
 
   @Override
@@ -155,7 +115,6 @@ public class StartScene extends ScreenAdapter {
 
   public void updateRotation(float targetRotation, float delta) {
     if (targetRotation != -1) {
-//      targetRotation = (Math.abs((float)Math.toDegrees(targetRotation)) > 180) ? (float)Math.toRadians( Math.toDegrees(targetRotation)-360) : targetRotation;
 
       // Apply smooth rotation using interpolation
 //      currentRotation += (targetRotation - currentRotation) * rotationSpeed * delta;
@@ -164,10 +123,5 @@ public class StartScene extends ScreenAdapter {
       // Set player rotation
 //      this.fish.addAction(Actions.rotateTo((float)Math.toDegrees(currentRotation), 0.5f, Interpolation.fastSlow));
     }
-  }
-
-  private float getValidRotation(float targetRotation){
-//    if(this.fish.getRotation() < 180)
-    return 0;
   }
 }

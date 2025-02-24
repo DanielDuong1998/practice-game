@@ -1,5 +1,7 @@
 package com.redrock.practice;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -11,11 +13,22 @@ public class TilemapActor extends Actor implements DisposableActor{
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer tiledMapRenderer;
     private OrthographicCamera camera;
+    private int mapPixelWidth, mapPixelHeight;
 
     public TilemapActor(String tmxFile, OrthographicCamera camera) {
-        this.camera = camera;
+        this.camera = new OrthographicCamera();
+        this.camera.setToOrtho(false, 1280, 720);
         tiledMap = new TmxMapLoader().load(tmxFile);
-        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap,0.1f); // Tùy chỉnh scale nếu cần
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap,1); // Tùy chỉnh scale nếu cần
+
+        int mapWidth = tiledMap.getProperties().get("width", Integer.class);
+        int mapHeight = tiledMap.getProperties().get("height", Integer.class);
+
+        int tileWidth = tiledMap.getProperties().get("tilewidth", Integer.class);
+        int tileHeight = tiledMap.getProperties().get("tileheight", Integer.class);
+
+        mapPixelWidth = mapWidth * tileWidth;
+        mapPixelHeight = mapHeight * tileHeight;
     }
 
     @Override
@@ -38,6 +51,32 @@ public class TilemapActor extends Actor implements DisposableActor{
     public void act(float delta) {
         super.act(delta);
         // Thêm logic cập nhật nếu cần
+
+        this.handleInput();
+    }
+
+    private void handleInput() {
+        float speed = 1000 * Gdx.graphics.getDeltaTime();
+
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            camera.position.x -= speed;
+            camera.position.x = Math.max(camera.position.x, camera.viewportWidth/2);
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            camera.position.x += speed;
+            camera.position.x = Math.min(camera.position.x, mapPixelWidth - camera.viewportWidth/2);
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            camera.position.y += speed;
+            camera.position.y = Math.min(camera.position.y, mapPixelHeight - camera.viewportHeight/2);
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            camera.position.y -= speed;
+            camera.position.y = Math.max(camera.position.y, camera.viewportHeight/2);
+        }
     }
 
     @Override
