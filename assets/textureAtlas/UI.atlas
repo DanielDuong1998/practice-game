@@ -1,0 +1,13 @@
+
+UI.png
+size: 512,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+btn_blue
+  rotate: false
+  xy: 2, 2
+  size: 254, 85
+  orig: 254, 85
+  offset: 0, 0
+  index: -1

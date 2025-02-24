@@ -1,0 +1,12 @@
+fish_spine
+size: 457,432
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+fish
+  rotate: false
+  xy: 0, 0
+  size: 457, 432
+  orig: 457, 432
+  offset: 0, 0
+  index: -1

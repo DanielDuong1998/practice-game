@@ -1,0 +1,145 @@
+android {
+    buildToolsVersion "33.0.2"
+    compileSdkVersion 33
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['../assets']
+            jniLibs.srcDirs = ['libs']
+        }
+
+    }
+    packagingOptions {
+        exclude 'META-INF/robovm/ios/robovm.xml'
+    }
+
+    defaultConfig {
+        applicationId "com.redrock.template"
+        minSdkVersion 19
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+    }
+
+    signingConfigs {
+        config {
+            storeFile file(project.file("../" + RELEASE_STORE_FILE).absolutePath)
+            storePassword RELEASE_STORE_PASS
+            keyAlias RELEASE_KEY_ALIAS
+            keyPassword RELEASE_STORE_PASS
+        }
+    }
+
+    buildTypes {
+        release {
+            buildConfigField "String", "ADMOB_APP_ID", "\"ca-app-pub-7896704203809207~5594539009\""
+            buildConfigField "String", "ADMOB_BANNER_ID", "\"ca-app-pub-7896704203809207/5659369562\""
+            buildConfigField "String", "ADMOB_FULLSCREEN_ID", "\"ca-app-pub-7896704203809207/4929976984\""
+            buildConfigField "String", "ADMOB_VIDEO_ID", "\"ca-app-pub-7896704203809207/9407042881\""
+
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+            externalNativeBuild {
+                ndkBuild {
+                    arguments 'NDK_DEBUG=0'
+                }
+            }
+            applicationVariants.all { variant ->
+                renameAPK(variant, defaultConfig)
+            }
+        }
+        debug {
+            buildConfigField "String", "ADMOB_APP_ID", "\"ca-app-pub-9108876944724815~8160462448\""
+            buildConfigField "String", "ADMOB_BANNER_ID", "\"ca-app-pub-3940256099942544/6300978111\""
+            buildConfigField "String", "ADMOB_FULLSCREEN_ID", "\"ca-app-pub-3940256099942544/1033173712\""
+            buildConfigField "String", "ADMOB_VIDEO_ID", "\"ca-app-pub-3940256099942544/5224354917\""
+
+            buildConfigField "String", "FULLSCREEN_HIGH_ECPM", "\"ca-app-pub-3940256099942544/1033173712\""
+            buildConfigField "String", "VIDEO_HIGH_ECPM", "\"ca-app-pub-3940256099942544/5224354917\""
+
+            debuggable true
+            jniDebuggable true
+            renderscriptDebuggable true
+            signingConfig signingConfigs.config
+            externalNativeBuild {
+                ndkBuild {
+                    arguments 'NDK_DEBUG=1'
+                }
+            }
+            applicationVariants.all { variant ->
+                renameAPK(variant, defaultConfig)
+            }
+        }
+    }
+}
+
+
+// called every time gradle gets executed, takes the native dependencies of
+// the natives configuration, and extracts them to the proper libs/ folders
+// so they get packed with the APK.
+task copyAndroidNatives {
+    doFirst {
+        file("libs/armeabi-v7a/").mkdirs()
+        file("libs/arm64-v8a/").mkdirs()
+        file("libs/x86_64/").mkdirs()
+        file("libs/x86/").mkdirs()
+
+        configurations.natives.copy().files.each { jar ->
+            def outputDir = null
+            if (jar.name.endsWith("natives-arm64-v8a.jar")) outputDir = file("libs/arm64-v8a")
+            if (jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("libs/armeabi-v7a")
+            if(jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
+            if(jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
+            if(outputDir != null) {
+                copy {
+                    from zipTree(jar)
+                    into outputDir
+                    include "*.so"
+                }
+            }
+        }
+    }
+}
+
+tasks.whenTaskAdded { packageTask ->
+    if (packageTask.name.contains("merge") && packageTask.name.contains("JniLibFolders")) {
+        packageTask.dependsOn 'copyAndroidNatives'
+    }
+}
+
+def renameAPK(variant, defaultConfig) {
+    variant.outputs.all {
+        def formattedDate = new Date().format('yyMMdd')
+        outputFileName = applicationName + "_V" + defaultConfig.versionCode + "_" + defaultConfig.versionName + "_" + formattedDate + ".apk"
+    }
+}
+
+task run(type: Exec) {
+    def path
+    def localProperties = project.file("../local.properties")
+    if (localProperties.exists()) {
+        Properties properties = new Properties()
+        localProperties.withInputStream { instr ->
+            properties.load(instr)
+        }
+        def sdkDir = properties.getProperty('sdk.dir')
+        if (sdkDir) {
+            path = sdkDir
+        } else {
+            path = "$System.env.ANDROID_HOME"
+        }
+    } else {
+        path = "$System.env.ANDROID_HOME"
+    }
+
+    def adb = path + "/platform-tools/adb"
+    commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.redrock/com.redrock.AndroidLauncher'
+}
+
+eclipse.project.name = appName + "-android"

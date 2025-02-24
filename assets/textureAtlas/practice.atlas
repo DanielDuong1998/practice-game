@@ -1,0 +1,11 @@
+practice.png
+size:1024,256
+repeat:none
+fish
+bounds:406,60,150,142
+inner_circle
+bounds:558,122,80,80
+ounner_circle
+bounds:2,2,200,200
+outer
+bounds:204,2,200,200

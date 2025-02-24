@@ -1,0 +1,58 @@
+[
+  {
+    "id": 0,
+    "title": "500",
+    "name": "coin",
+    "qty": 500,
+    "rg": "small_coin"
+  },
+  {
+    "id": 1,
+    "title": "2K",
+    "name": "coin",
+    "qty": 2000,
+    "rg": "normal_coin"
+  },
+  {
+    "id": 2,
+    "title": "500",
+    "name": "coin",
+    "qty": 500,
+    "rg": "small_coin"
+  },
+  {
+    "id": 3,
+    "title": "5K",
+    "name": "coin",
+    "qty": 5000,
+    "rg": "big_coin"
+  },
+  {
+    "id": 4,
+    "title": "250",
+    "name": "coin",
+    "qty": 250,
+    "rg": "small_coin"
+  },
+  {
+    "id": 5,
+    "title": "1000",
+    "name": "coin",
+    "qty": 1000,
+    "rg": "normal_coin"
+  },
+  {
+    "id": 6,
+    "title": "500",
+    "name": "coin",
+    "qty": 500,
+    "rg": "small_coin"
+  },
+  {
+    "id": 7,
+    "title": "5000",
+    "name": "coin",
+    "qty": 5000,
+    "rg": "big_coin"
+  }
+]

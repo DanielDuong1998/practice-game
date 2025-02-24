@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "813146685417",
+    "project_id": "redrocktemplate",
+    "storage_bucket": "redrocktemplate.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:813146685417:android:50355be87ca797612f9578",
+        "android_client_info": {
+          "package_name": "com.redrock.template"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWXpXnIlmVL_LDJJ7iExaLo3ZioWd4HpY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

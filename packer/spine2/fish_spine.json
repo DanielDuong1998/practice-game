@@ -1,0 +1,102 @@
+{
+    "skeleton": {
+        "hash": "example",
+        "spine": "4.0",
+        "images": "",
+        "audio": ""
+    },
+    "bones": [
+        {
+            "name": "root"
+        },
+        {
+            "name": "body",
+            "parent": "root"
+        }
+    ],
+    "slots": [
+        {
+            "name": "fish",
+            "bone": "body",
+            "attachment": "fish_image"
+        }
+    ],
+    "skins": {
+        "default": {
+            "fish": {
+                "fish_image": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 457,
+                    "height": 432
+                }
+            }
+        }
+    },
+    "animations": {
+        "turn_left": {
+            "bones": {
+                "body": {
+                    "rotate": [
+                        {
+                            "time": 0,
+                            "angle": -30
+                        },
+                        {
+                            "time": 0.5,
+                            "angle": 0
+                        }
+                    ]
+                }
+            }
+        },
+        "turn_right": {
+            "bones": {
+                "body": {
+                    "rotate": [
+                        {
+                            "time": 0,
+                            "angle": 30
+                        },
+                        {
+                            "time": 0.5,
+                            "angle": 0
+                        }
+                    ]
+                }
+            }
+        },
+        "turn_up": {
+            "bones": {
+                "body": {
+                    "rotate": [
+                        {
+                            "time": 0,
+                            "angle": -15
+                        },
+                        {
+                            "time": 0.5,
+                            "angle": 0
+                        }
+                    ]
+                }
+            }
+        },
+        "turn_down": {
+            "bones": {
+                "body": {
+                    "rotate": [
+                        {
+                            "time": 0,
+                            "angle": 15
+                        },
+                        {
+                            "time": 0.5,
+                            "angle": 0
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
