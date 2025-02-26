@@ -4,26 +4,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.esotericsoftware.kryonet.Client;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
 import com.redrock.Main;
 import com.redrock.manager.SceneMgr;
 import com.redrock.practice.GameState;
 import com.redrock.practice.Joystick;
 import com.redrock.practice.MinimapActor;
-import com.redrock.practice.PlayerInput;
+import com.redrock.practice.MinimapActor2;
 import com.redrock.practice.TilemapActor;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StartScene extends ScreenAdapter {
 
@@ -38,7 +34,7 @@ public class StartScene extends ScreenAdapter {
 
   private final Group gParent;
   private TilemapActor tilemapActor;
-  private MinimapActor minimapActor;
+  private MinimapActor2 minimapActor;
   private OrthographicCamera minimapCamera;
   private Viewport minimapViewport;
   private Client client;
@@ -58,11 +54,13 @@ public class StartScene extends ScreenAdapter {
     Main.layers().activeLayersBy(SceneMgr.START_SCENE);
     Main.getStage().addActor(gParent);
 
+    System.out.println("viewport: " + Main.getCamera().viewportWidth + "-" + Main.getCamera().viewportHeight);
+
     tilemapActor = new TilemapActor("map/map2.tmx", Main.getCamera());
     this.gParent.addActor(tilemapActor);
 
-    this.minimapActor = new MinimapActor(tilemapActor.getTiledMap(), 1280, 720);
-    this.gParent.addActor(this.minimapActor);
+//    this.minimapActor = new MinimapActor2(tilemapActor.getTiledMap(), Gdx.graphics.getWidth(),  Gdx.graphics.getHeight());
+//    Main.getStage2().addActor(this.minimapActor);
 
 
     this.fish = new Image(Main.asset().getTG("fish"));
@@ -72,9 +70,24 @@ public class StartScene extends ScreenAdapter {
     this.fish.setPosition(800, 200);
     this.gParent.addActor(this.fish);
 
-    System.out.println("cam x-y: " + Main.getCamera().position.x + "-" + Main.getCamera().position.y);
-    System.out.println("cam w-h: " + Main.getCamera().viewportWidth + "-" + Main.getCamera().viewportHeight);
 
+    MinimapActor minimap = new MinimapActor(tilemapActor.getTiledMap(), 200, 200);
+    minimap.setSize(200, 200);
+    minimap.setPosition(Main.getStage2().getWidth() - minimap.getWidth(), Main.getStage2().getHeight() - minimap.getHeight());
+
+// Thêm vào Stage
+    Main.getStage2().addActor(minimap);
+
+    Vector2 posTest = new Vector2(0, 500);
+// Cập nhật danh sách nhân vật trong game loop
+    List<Vector2> playerPositions = new ArrayList<>();
+    playerPositions.add(posTest); // Ví dụ: nhân vật ở tọa độ (500, 500)
+    minimap.setPlayerPositions(playerPositions);
+
+    Image point = new Image(Main.asset().getTG("point_5px"));
+    Main.getStage().addActor(point);
+    point.setSize(point.getWidth()*10, point.getHeight()*10);
+    point.setPosition(posTest.x, posTest.y);
   }
 
   @Override
@@ -89,11 +102,17 @@ public class StartScene extends ScreenAdapter {
     this.fish.setX(this.fish.getX() + moveX * speed * delta);
     this.fish.setY(this.fish.getY() + moveY * speed * delta);
 
+    tilemapActor.getCamera().position.x += moveX * speed * delta;
+    tilemapActor.getCamera().position.y += moveY * speed * delta;
+
+//    tilemapActor.getCamera().position.x = this.fish.getX();
+//    tilemapActor.getCamera().position.y = this.fish.getY();
+
     float targetRotation = (float) Math.toRadians(joystick.getRotationAngle());
     this.updateRotation(targetRotation, delta);
 
     Main.getCamera().update();
-    Main.getMapRenderer().render();
+//    Main.getMapRenderer().render();
   }
 
   @Override

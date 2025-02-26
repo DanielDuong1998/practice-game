@@ -8,6 +8,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.redrock.Main;
 
 public class TilemapActor extends Actor implements DisposableActor{
     private TiledMap tiledMap;
@@ -17,7 +18,7 @@ public class TilemapActor extends Actor implements DisposableActor{
 
     public TilemapActor(String tmxFile, OrthographicCamera camera) {
         this.camera = new OrthographicCamera();
-        this.camera.setToOrtho(false, 1280, 720);
+        this.camera.setToOrtho(false, Gdx.graphics.getWidth(),  Gdx.graphics.getHeight());
         tiledMap = new TmxMapLoader().load(tmxFile);
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap,1); // Tùy chỉnh scale nếu cần
 
@@ -60,22 +61,22 @@ public class TilemapActor extends Actor implements DisposableActor{
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             camera.position.x -= speed;
-            camera.position.x = Math.max(camera.position.x, camera.viewportWidth/2);
+            camera.position.x = Math.max(camera.position.x, 0);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             camera.position.x += speed;
-            camera.position.x = Math.min(camera.position.x, mapPixelWidth - camera.viewportWidth/2);
+            camera.position.x = Math.min(camera.position.x, mapPixelWidth + camera.viewportWidth/2);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             camera.position.y += speed;
-            camera.position.y = Math.min(camera.position.y, mapPixelHeight - camera.viewportHeight/2);
+            camera.position.y = Math.min(camera.position.y, mapPixelHeight + camera.viewportHeight/2);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             camera.position.y -= speed;
-            camera.position.y = Math.max(camera.position.y, camera.viewportHeight/2);
+            camera.position.y = Math.max(camera.position.y, 0);
         }
     }
 
@@ -86,4 +87,9 @@ public class TilemapActor extends Actor implements DisposableActor{
     }
 
     public TiledMap getTiledMap(){return tiledMap;}
+
+    public int getMapPixelWidth(){return mapPixelWidth;}
+    public int getMapPixelHeight(){return mapPixelHeight;}
+
+    public OrthographicCamera getCamera(){return this.camera;}
 }

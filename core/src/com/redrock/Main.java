@@ -15,7 +15,11 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.redrock.manager.*;
 import com.redrock.sdk.AssetLoader;
@@ -47,6 +51,7 @@ public class Main extends Game implements IQuit {
 	private 		Fps												fps;
 
 	private 		Stage											stage;
+	private 		Stage											stage2;
 	private 		InputMultiplexer 					inputMultiplexer;
 
 	private 		Texture										bgLoading;
@@ -102,9 +107,13 @@ public class Main extends Game implements IQuit {
 
 		camera		= new OrthographicCamera();
 		viewport 	= new ExtendViewport(minW, minH, maxW, maxH, camera);
+//		viewport 	= new FillViewport(minW, minH);
+//		viewport 	= new ScalingViewport(Scaling.fill, minW, minH);
+//		viewport 	= new FitViewport(minW, minH, camera);
 		viewport.apply();
 
 		stage 						= new Stage(viewport, batch);
+		stage2 						= new Stage(viewport, batch);
 		inputMultiplexer 	= new InputMultiplexer();
 		inputMultiplexer.addProcessor(new InputAdapter() {
 			@Override
@@ -113,14 +122,15 @@ public class Main extends Game implements IQuit {
 			}
 		});
 		inputMultiplexer.addProcessor(stage);
+		inputMultiplexer.addProcessor(stage2);
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
 		layers			= new Layers();
 		particleMgr = new ParticleMgr();
 		soundMgr		= new SoundMgr();
 
-		map = new TmxMapLoader().load("map.tmx");
-		mapRenderer = new OrthogonalTiledMapRenderer(map, 1);
+//		map = new TmxMapLoader().load("map.tmx");
+//		mapRenderer = new OrthogonalTiledMapRenderer(map, 1);
 
 		initLoading();
 	}
@@ -146,8 +156,10 @@ public class Main extends Game implements IQuit {
 		}
 
 		stage.act(Gdx.graphics.getDeltaTime() * sclTime);
+		stage2.act(Gdx.graphics.getDeltaTime() * sclTime);
 		stage.draw();
-		mapRenderer.setView(camera);
+		stage2.draw();
+//		mapRenderer.setView(camera);
 
 		// Render bản đồ
 //		mapRenderer.render();
@@ -256,6 +268,9 @@ public class Main extends Game implements IQuit {
 
 	public static Stage getStage() {
 		return ((Main)Gdx.app.getApplicationListener()).stage;
+	}
+	public static Stage getStage2() {
+		return ((Main)Gdx.app.getApplicationListener()).stage2;
 	}
 
 	public static OrthographicCamera  getCamera() {

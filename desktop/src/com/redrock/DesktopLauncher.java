@@ -15,6 +15,9 @@ public class DesktopLauncher {
 		config.setForegroundFPS(60);
 //		config.setWindowedMode((int) (720 * .75f), (int) (1280 * .75f));
 		config.setWindowedMode((int) (1280 * .75f), (int) (720 * .75f));
+//		config.setWindowedMode((int) (2868 * .5f), (int) (1320 * .5f));
+//		config.setWindowedMode((int) (2420 * .5f), (int) (1668 * .5f)); // pad
+//		config.setWindowedMode((int) (2960 * .4f), (int) (1848 * .4f)); // pad
 		config.setWindowPosition(300, 40);
 		config.setTitle("RedRockTemplate");
 

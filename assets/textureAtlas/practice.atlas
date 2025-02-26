@@ -2,10 +2,12 @@ practice.png
 size:1024,256
 repeat:none
 fish
-bounds:406,60,150,142
+bounds:406,87,150,142
 inner_circle
-bounds:558,122,80,80
+bounds:558,149,80,80
 ounner_circle
-bounds:2,2,200,200
+bounds:2,29,200,200
 outer
-bounds:204,2,200,200
+bounds:204,29,200,200
+point_5px
+bounds:2,2,25,25
