@@ -8,13 +8,13 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import androidx.annotation.RequiresApi;
-import androidx.annotation.RequiresPermission;
+
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.redrock.practice.GameClient1;
 import com.redrock.sdk.AdsClose;
 import com.redrock.sdk.IPlat;
 import com.redrock.template.R;

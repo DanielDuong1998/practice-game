@@ -1,97 +1,62 @@
 package com.redrock.practice;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.esotericsoftware.kryonet.Client;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.*;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 
-import java.io.IOException;
+public class GameClient {
+    private final String host; // Địa chỉ server
+    private final int port;    // Cổng server
+    private Channel channel;   // Kênh kết nối
+    private EventLoopGroup group;
 
-public class GameClient extends ApplicationAdapter {
-    private SpriteBatch batch;
-    private Client client;
-    private GameState gameState;
-    private int myPlayerId;
-    private Texture texture;
-    private boolean isConnected = false;
-
-    @Override
-    public void create() {
-        batch = new SpriteBatch();
-        texture = new Texture("texture/fish.png"); // Đảm bảo có file player.png trong assets
-
-        // Khởi tạo client
-        client = new Client();
-        client.start();
-
-        // Đăng ký các class
-        client.getKryo().register(PlayerInput.class);
-        client.getKryo().register(GameState.class);
-        client.getKryo().register(Player.class);
-        client.getKryo().register(java.util.HashMap.class);
-        client.getKryo().register(java.util.Map.class);
-
-        // Chạy kết nối trong thread riêng
-        new Thread(() -> {
-            try {
-                client.connect(5000, "127.0.0.1", 54555, 54777); // Kết nối đến server
-                myPlayerId = client.getID();
-                isConnected = true;
-                System.out.println("Connected to server. Player ID: " + myPlayerId);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Gdx.app.exit(); // Thoát nếu không kết nối được
-            }
-        }).start();
-
-        // Listener để nhận dữ liệu từ server
-        client.addListener(new Listener() {
-            @Override
-            public void received(Connection connection, Object object) {
-                if (object instanceof GameState) {
-                    gameState = (GameState) object;
-                    System.out.println("Received: " + gameState);
-                }
-            }
-        });
+    public GameClient(String host, int port) {
+        this.host = host;
+        this.port = port;
     }
 
-    @Override
-    public void render() {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        // Gọi client.update() trong thread chính để duy trì kết nối
+    public void start() throws Exception {
+        group = new NioEventLoopGroup();
         try {
-            client.update(10); // Cập nhật Kryonet với timeout nhỏ
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            Bootstrap bootstrap = new Bootstrap();
+            bootstrap.group(group)
+                    .channel(NioSocketChannel.class)
+                    .handler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        protected void initChannel(SocketChannel ch) {
+                            ChannelPipeline pipeline = ch.pipeline();
+                            pipeline.addLast(new StringDecoder()); // Decode dữ liệu từ server
+                            pipeline.addLast(new StringEncoder()); // Encode dữ liệu gửi đi
+                            pipeline.addLast(new GameClientHandler()); // Xử lý dữ liệu
+                        }
+                    });
 
-        // Gửi input nếu đã kết nối
-        if (isConnected) {
-            PlayerInput input = new PlayerInput(myPlayerId, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
-            client.sendTCP(input);
-        }
-
-        // Hiển thị trạng thái game
-        if (gameState != null) {
-            batch.begin();
-            for (Player player : gameState.players.values()) {
-                batch.draw(texture, player.x, player.y, 32, 32);
-            }
-            batch.end();
+            // Kết nối đến server
+            ChannelFuture future = bootstrap.connect(host, port).sync();
+            channel = future.channel();
+            System.out.println("Connected to server at " + host + ":" + port);
+        } catch (Exception e) {
+            group.shutdownGracefully();
+            throw e;
         }
     }
 
-    @Override
-    public void dispose() {
-        batch.dispose();
-        texture.dispose();
-        client.stop();
+    public void sendMessage(String message) {
+        if (channel != null && channel.isActive()) {
+            channel.writeAndFlush(message);
+        }
+    }
+
+    public void stop() {
+        if (channel != null) {
+            channel.close();
+        }
+        if (group != null) {
+            group.shutdownGracefully();
+        }
     }
 }

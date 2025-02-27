@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.redrock.manager.*;
+import com.redrock.practice.GameClient;
 import com.redrock.sdk.AssetLoader;
 import com.redrock.sdk.IPlat;
 import com.redrock.sdk.IQuit;
@@ -82,6 +83,7 @@ public class Main extends Game implements IQuit {
 	private 		ModuleMessage 						moduleMessage;
 	private TiledMap map;
 	private OrthogonalTiledMapRenderer mapRenderer;
+	GameClient client;
 
 	public Main(float minW, float minH, float maxW, float maxH, IPlat iPlat) {
 		this.minW 	= minW;
@@ -133,6 +135,18 @@ public class Main extends Game implements IQuit {
 //		mapRenderer = new OrthogonalTiledMapRenderer(map, 1);
 
 		initLoading();
+
+//		client = new GameClient("192.168.1.3", 54555); // Thay bằng IP/port của server
+//		new Thread(() -> {
+//			try {
+//				client.start();
+//				// Gửi tin nhắn thử nghiệm
+//				for(int i = 50; i < 100; i++)
+//					client.sendMessage("Hello, Server! I'm a LibGDX client.");
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}).start();
 	}
 
 	@Override
@@ -159,6 +173,7 @@ public class Main extends Game implements IQuit {
 		stage2.act(Gdx.graphics.getDeltaTime() * sclTime);
 		stage.draw();
 		stage2.draw();
+
 //		mapRenderer.setView(camera);
 
 		// Render bản đồ

@@ -130,8 +130,9 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        api "com.esotericsoftware:kryonet:2.22.0-RC1"
+//        api "com.esotericsoftware:kryonet:2.22.0-RC1"
+        api "io.netty:netty-all:4.1.107.Final"
         api "com.badlogicgames.gdx:gdx-ai:1.8.2"
-        
+
     }
 }

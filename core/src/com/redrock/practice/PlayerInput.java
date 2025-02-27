@@ -1,8 +1,4 @@
 package com.redrock.practice;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-
 import java.io.Serializable;
 
 public class PlayerInput implements Serializable {

@@ -9,9 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.esotericsoftware.kryonet.Client;
 import com.redrock.Main;
 import com.redrock.manager.SceneMgr;
+import com.redrock.practice.GameClient;
 import com.redrock.practice.GameState;
 import com.redrock.practice.Joystick;
 import com.redrock.practice.MinimapActor;
@@ -37,8 +37,9 @@ public class StartScene extends ScreenAdapter {
   private MinimapActor2 minimapActor;
   private OrthographicCamera minimapCamera;
   private Viewport minimapViewport;
-  private Client client;
   GameState gameState;
+
+  GameClient client;
 
   public StartScene() {
     this.gParent = new Group();
@@ -50,6 +51,17 @@ public class StartScene extends ScreenAdapter {
   @Override
   public void show() {
     super.show();
+
+    client = new GameClient("192.168.1.3", 54555); // Thay bằng IP/port của server
+    new Thread(() -> {
+      try {
+        client.start();
+        // Gửi tin nhắn thử nghiệm
+
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }).start();
 
     Main.layers().activeLayersBy(SceneMgr.START_SCENE);
     Main.getStage().addActor(gParent);
@@ -91,6 +103,8 @@ public class StartScene extends ScreenAdapter {
     Main.getStage().addActor(point);
     point.setSize(point.getWidth()*10, point.getHeight()*10);
     point.setPosition(posTest.x, posTest.y);
+
+    client.sendMessage("from start scene client send");
   }
 
   @Override
@@ -116,6 +130,8 @@ public class StartScene extends ScreenAdapter {
 
     Main.getCamera().update();
 //    Main.getMapRenderer().render();
+    client.sendMessage("hello server, I'm a client libgdx");
+
   }
 
   @Override

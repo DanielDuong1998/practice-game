@@ -1,5 +1,6 @@
 package com.redrock;
 
+import com.redrock.sdk.AdsClose;
 import com.redrock.sdk.IPlat;
 import org.robovm.apple.foundation.NSAutoreleasePool;
 import org.robovm.apple.uikit.UIApplication;
@@ -45,9 +46,19 @@ public class IOSLauncher extends IOSApplication.Delegate {
             }
 
             @Override
-            public void showVideoReward(OnVideoRewardClosed callback) {
+            public void showVideoReward(AdsClose callback) {
 
             }
+
+            @Override
+            public void showFullscreen(AdsClose onShow, AdsClose onDone) {
+
+            }
+
+//            @Override
+//            public void showVideoReward(OnVideoRewardClosed callback) {
+//
+//            }
 
             @Override
             public void showFullscreen() {
@@ -142,6 +153,21 @@ public class IOSLauncher extends IOSApplication.Delegate {
             @Override
             public void quitGame() {
 
+            }
+
+            @Override
+            public void log(String msg) {
+
+            }
+
+            @Override
+            public void onShow() {
+
+            }
+
+            @Override
+            public String getMD5PathFile(String filename) {
+                return null;
             }
         };
 

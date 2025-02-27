@@ -2,9 +2,7 @@ package com.redrock;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.redrock.Main;
-import com.redrock.practice.GameClient;
-import com.redrock.practice.MyGame;
+import com.redrock.practice.GameClient1;
 import com.redrock.sdk.AdsClose;
 import com.redrock.sdk.IPlat;
 
@@ -175,6 +173,6 @@ public class DesktopLauncher {
 
 //		new Lwjgl3Application(new Main(720, 1280, 2160, 3840, iPlat), config);
 		new Lwjgl3Application(new Main(1280, 720, 3840, 2160, iPlat), config);
-//		new Lwjgl3Application(new GameClient(), config);
+//		new Lwjgl3Application(new GameClient1(), config);
 	}
 }
