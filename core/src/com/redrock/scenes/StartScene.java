@@ -27,7 +27,7 @@ public class StartScene extends ScreenAdapter {
   public static float CENTER_Y = Main.getStage().getHeight()/2;
   private Joystick joystick;
   private Image fish;
-  float speed = 200f; // Movement speed
+  float speed = 10f; // Movement speed
   private float currentRotation = 0f;  // Player's current rotation
   private float rotationSpeed = 5f;    // Rotation speed (higher = faster rotation)
   private float targetRotation = 0;
@@ -56,22 +56,25 @@ public class StartScene extends ScreenAdapter {
 
     System.out.println("viewport: " + Main.getCamera().viewportWidth + "-" + Main.getCamera().viewportHeight);
 
-    tilemapActor = new TilemapActor("map/map2.tmx", Main.getCamera());
+    this.fish = new Image(Main.asset().getTG("fish"));
+    this.joystick = new Joystick(this.gParent);
+
+
+    tilemapActor = new TilemapActor("map/map2.tmx", this.fish, this.joystick);
     this.gParent.addActor(tilemapActor);
+    this.joystick.addActor(this.gParent);
 
 //    this.minimapActor = new MinimapActor2(tilemapActor.getTiledMap(), Gdx.graphics.getWidth(),  Gdx.graphics.getHeight());
 //    Main.getStage2().addActor(this.minimapActor);
 
 
-    this.fish = new Image(Main.asset().getTG("fish"));
     this.fish.setOrigin(Align.center);
     this.gParent.addActor(this.fish);
-    this.joystick = new Joystick(this.gParent);
     this.fish.setPosition(800, 200);
     this.gParent.addActor(this.fish);
 
 
-    MinimapActor minimap = new MinimapActor(tilemapActor.getTiledMap(), 200, 200);
+    MinimapActor minimap = new MinimapActor(tilemapActor.getTiledMap(), 200, 200, this.fish, this.joystick);
     minimap.setSize(200, 200);
     minimap.setPosition(Main.getStage2().getWidth() - minimap.getWidth(), Main.getStage2().getHeight() - minimap.getHeight());
 
@@ -102,8 +105,8 @@ public class StartScene extends ScreenAdapter {
     this.fish.setX(this.fish.getX() + moveX * speed * delta);
     this.fish.setY(this.fish.getY() + moveY * speed * delta);
 
-    tilemapActor.getCamera().position.x += moveX * speed * delta;
-    tilemapActor.getCamera().position.y += moveY * speed * delta;
+//    tilemapActor.getCamera().position.x += moveX * speed * delta;
+//    tilemapActor.getCamera().position.y += moveY * speed * delta;
 
 //    tilemapActor.getCamera().position.x = this.fish.getX();
 //    tilemapActor.getCamera().position.y = this.fish.getY();

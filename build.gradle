@@ -12,9 +12,11 @@ buildscript {
         classpath 'org.wisepersist:gwt-gradle-plugin:1.1.16'
         classpath 'org.gretty:gretty:3.0.7'
         classpath 'com.android.tools.build:gradle:7.4.2'
+//        classpath 'com.android.tools.build:gradle:7.0.4'
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.16'
         classpath 'org.multi-os-engine:moe-gradle:1.4.0'
         classpath 'com.google.gms:google-services:4.4.1'
+//        classpath 'com.google.gms:google-services:4.3.10'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
         classpath "com.badlogicgames.gdx:gdx-tools:1.9.11"
     }
@@ -129,6 +131,7 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         api "com.esotericsoftware:kryonet:2.22.0-RC1"
+        api "com.badlogicgames.gdx:gdx-ai:1.8.2"
         
     }
 }

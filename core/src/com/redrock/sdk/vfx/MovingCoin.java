@@ -1,5 +1,6 @@
 package com.redrock.sdk.vfx;
 
+import com.badlogic.gdx.ai.steer.SteeringBehavior;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.redrock.Main;
 
@@ -15,8 +16,12 @@ public class TilemapActor extends Actor implements DisposableActor{
     private OrthogonalTiledMapRenderer tiledMapRenderer;
     private OrthographicCamera camera;
     private int mapPixelWidth, mapPixelHeight;
+    private Actor target;
+    private Joystick joystick;
 
-    public TilemapActor(String tmxFile, OrthographicCamera camera) {
+    public TilemapActor(String tmxFile, Actor actor, Joystick joystick) {
+        this.joystick = joystick;
+        this.target = actor;
         this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(),  Gdx.graphics.getHeight());
         tiledMap = new TmxMapLoader().load(tmxFile);
@@ -30,6 +35,8 @@ public class TilemapActor extends Actor implements DisposableActor{
 
         mapPixelWidth = mapWidth * tileWidth;
         mapPixelHeight = mapHeight * tileHeight;
+
+        System.out.println("camera pos start: " + camera.position);
     }
 
     @Override
@@ -54,6 +61,30 @@ public class TilemapActor extends Actor implements DisposableActor{
         // Thêm logic cập nhật nếu cần
 
         this.handleInput();
+        this.updateCamera();
+    }
+
+    private void updateCamera(){
+        if(this.target == null || camera == null) return;
+
+//        float posX = target.getX();
+//        float posY = target.getY();
+//        Vector3 cameraCoords = new Vector3(posX, posY, 0);
+//        camera.project(cameraCoords);
+//        camera.position.set(cameraCoords);
+//        camera.position.set(posX, posY, 0);
+
+        camera.position.x += this.joystick.getKnobX() *Gdx.graphics.getDeltaTime()*500;
+        camera.position.y += this.joystick.getKnobY() *Gdx.graphics.getDeltaTime()*500;
+
+        // Giữ camera trong giới hạn của bản đồ
+//        float halfWidth = camera.viewportWidth / 2;
+//        float halfHeight = camera.viewportHeight / 2;
+
+//        camera.position.x = Math.max(halfWidth, Math.min(camera.position.x, mapPixelWidth - halfWidth));
+//        camera.position.y = Math.max(halfHeight, Math.min(camera.position.y, mapPixelHeight - halfHeight));
+
+        camera.update();
     }
 
     private void handleInput() {
@@ -87,9 +118,6 @@ public class TilemapActor extends Actor implements DisposableActor{
     }
 
     public TiledMap getTiledMap(){return tiledMap;}
-
-    public int getMapPixelWidth(){return mapPixelWidth;}
-    public int getMapPixelHeight(){return mapPixelHeight;}
 
     public OrthographicCamera getCamera(){return this.camera;}
 }

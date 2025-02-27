@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.redrock.Main;
 
@@ -29,9 +30,13 @@ public class MinimapActor extends Actor {
     private float worldWidth, worldHeight;
     private float cameraStartPosX, cameraStartPosY;
     private TextureRegion pointTg;
+    private Actor target;
+    private Joystick joystick;
 
 
-    public MinimapActor(TiledMap tiledMap, float width, float height) {
+    public MinimapActor(TiledMap tiledMap, float width, float height, Actor actor, Joystick joystick) {
+        this.joystick = joystick;
+        this.target = actor;
         float miniMapWidth = 200;
         float miniMapHeight = 200;
 
@@ -131,6 +136,28 @@ public class MinimapActor extends Actor {
         super.act(delta);
 
         handleInput();
+        updateCamera();
+    }
+
+    private void updateCamera(){
+        if(this.target == null) return;
+
+        float posX = target.getX();
+        float posY = target.getY();
+        Vector3 cameraCoords = new Vector3(posX, posY, 0);
+//        miniMapCamera.project(cameraCoords);
+//        camera.position.set(cameraCoords);
+        miniMapCamera.position.x += this.joystick.getKnobX() *Gdx.graphics.getDeltaTime()*50;
+        miniMapCamera.position.y += this.joystick.getKnobY() *Gdx.graphics.getDeltaTime()*50;
+
+        // Giữ camera trong giới hạn của bản đồ
+        float halfWidth = miniMapCamera.viewportWidth / 2;
+        float halfHeight = miniMapCamera.viewportHeight / 2;
+
+//        miniMapCamera.position.x = Math.max(halfWidth, Math.min(miniMapCamera.position.x, mapPixelWidth - halfWidth));
+//        miniMapCamera.position.y = Math.max(halfHeight, Math.min(miniMapCamera.position.y, mapPixelHeight - halfHeight));
+
+        miniMapCamera.update();
     }
 
     private void handleInput() {

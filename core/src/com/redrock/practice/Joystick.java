@@ -35,6 +35,10 @@ public class Joystick {
         touchpad.setBounds(50, 50, 150, 150);  // Position and size of the joystick
 
         // Add to stage
+//        group.addActor(touchpad);
+    }
+
+    public void addActor(Group group){
         group.addActor(touchpad);
     }
 
